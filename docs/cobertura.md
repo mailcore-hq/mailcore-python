@@ -75,11 +75,13 @@ envelopes distintos do backend.
 ## Contratos relevantes
 
 - Envio direto permite composição Cc/Cco, cabeçalhos e anexos Base64/CID conforme
-  o DTO. Envio por modelo tem seu próprio formato, sem misturar campos exclusivos
-  da composição direta. O cliente não baixa anexos remotos por iniciativa própria.
+  o DTO. Modelos também admitem Cc/Cco, cabeçalhos e remetente com nome, no envio
+  individual e em lote, sem `html`, `texto` ou `react` no mesmo pedido. CID continua
+  exclusivo do envio direto individual. O cliente não baixa anexos remotos.
 - Lotes seguem o array e a aceitação atômica do backend, sem dividir pedidos nem
-  repetir automaticamente. Agendamento usa `agendada_em` ISO 8601 com fuso e as
-  regras de estado do servidor. Aceitação não comprova entrega SMTP.
+  repetir automaticamente. Seus anexos devem ser omitidos ou `[]`; os tipos
+  `PedidoEmailLote` conservam essa restrição. Agendamento usa `agendada_em` ISO 8601
+  com fuso e as regras de estado do servidor. Aceitação não comprova entrega SMTP.
 - Importações recebem CSV UTF-8 no corpo JSON. O limite de CSV é 8 MiB no contrato
   da API; o transporte admite JSON de até 50 MiB para acomodar escapes. Esse teto
   geral não amplia limites menores dos demais endpoints.

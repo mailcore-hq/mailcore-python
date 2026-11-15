@@ -6,7 +6,17 @@ from collections.abc import AsyncIterator, Iterator, Mapping
 from dataclasses import dataclass, field
 from os import PathLike
 from types import MappingProxyType
-from typing import Any, Generic, NotRequired, Protocol, Required, TypeAlias, TypedDict, TypeVar
+from typing import (
+    Any,
+    Generic,
+    Never,
+    NotRequired,
+    Protocol,
+    Required,
+    TypeAlias,
+    TypedDict,
+    TypeVar,
+)
 
 T = TypeVar("T")
 Json: TypeAlias = None | bool | int | float | str | list["Json"] | dict[str, "Json"]
@@ -92,6 +102,9 @@ class EmailComModelo(_EnvioBasico, total=False):
     remetente: str | None
     assunto: str | None
     anexos: list[AnexoEmail]
+    cc: list[str]
+    cco: list[str]
+    cabecalhos: dict[str, str]
 
 
 PedidoEmail: TypeAlias = EmailHtml | EmailTexto | EmailComModelo
@@ -100,6 +113,10 @@ PedidoEmail: TypeAlias = EmailHtml | EmailTexto | EmailComModelo
 class _LoteDireto(_EnvioBasico):
     remetente: str
     assunto: str
+    cc: NotRequired[list[str]]
+    cco: NotRequired[list[str]]
+    cabecalhos: NotRequired[dict[str, str]]
+    anexos: NotRequired[list[Never]]
 
 
 class EmailHtmlLote(_LoteDireto):
@@ -116,6 +133,10 @@ class EmailModeloLote(_EnvioBasico, total=False):
     modelo: Required[ModeloEnvio]
     remetente: str | None
     assunto: str | None
+    cc: list[str]
+    cco: list[str]
+    cabecalhos: dict[str, str]
+    anexos: list[Never]
 
 
 PedidoEmailLote: TypeAlias = EmailHtmlLote | EmailTextoLote | EmailModeloLote
