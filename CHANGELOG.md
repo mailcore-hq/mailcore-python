@@ -1,9 +1,19 @@
 # Histórico de alterações
 
+## 0.1.0a2 — 15/11/2026
+
+- Instalação principal pelo PyPI, com versão explícita, e instruções locais
+  separadas para desenvolvimento.
+- Documentação do pacote sem mensagens transitórias de indisponibilidade;
+  orientações de segurança e cobertura mantidas coerentes com a distribuição.
+- Identificação da versão, verificadores de instalação e workflow manual
+  alinhados à nova versão, preservando o contrato funcional do SDK.
+- As evidências históricas e os artefatos da versão `0.1.0a1` permanecem intactos.
+
 ## 0.1.0a1 — 14/11/2026
 
-Primeira versão alpha local da distribuição `mailcore-sdk`, importada como
-`mailcore`. Ainda não publicada no PyPI.
+Primeira versão alpha da distribuição `mailcore-sdk`, importada como
+`mailcore`. Publicada no PyPI em 15/11/2026.
 
 - Clientes síncrono e assíncrono com estado e pools próprios, fechamento explícito
   e suporte a `with`/`async with`.

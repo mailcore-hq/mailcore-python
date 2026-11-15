@@ -43,7 +43,7 @@ for perfil in 3.11 3.12 3.13 3.14 3.15; do
     --user "$(id -u):$(id -g)" --env PYTHONDONTWRITEBYTECODE=1 --env PYTHONPATH=/tmp/instalado \
     --mount "type=bind,src=$raiz/dist,dst=/pacotes,readonly" \
     --mount "type=bind,src=$raiz/scripts,dst=/scripts,readonly" "$base" sh -c \
-    'python -m pip install --disable-pip-version-check --no-cache-dir --no-index --find-links=/pacotes/dependencias --target /tmp/instalado /pacotes/mailcore_sdk-0.1.0a1-py3-none-any.whl && python /scripts/verificar_instalacao.py'
+    'python -m pip install --disable-pip-version-check --no-cache-dir --no-index --find-links=/pacotes/dependencias --target /tmp/instalado /pacotes/mailcore_sdk-0.1.0a2-py3-none-any.whl && python /scripts/verificar_instalacao.py'
 done
 docker run --rm --network none --user "$(id -u):$(id -g)" \
   --mount "type=bind,src=$raiz/dist,dst=/pacotes" mailcore/python-distribuicao:local \

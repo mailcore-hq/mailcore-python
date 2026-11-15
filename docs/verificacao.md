@@ -2,6 +2,9 @@
 
 O laboratório usa dados sintéticos. Não publica pacotes, não faz deploy nem envia
 SMTP. Os relatórios JSON registram versões, imagens e resultados observados.
+As evidências de 14/11/2026 abaixo correspondem à versão `0.1.0a1` e permanecem
+preservadas como histórico; não representam uma nova execução de toda a matriz
+para versões posteriores.
 
 Em 14/11/2026, passaram **439 testes por versão** em CPython 3.11.18, 3.12.16,
 3.13.18, 3.14.10 e 3.15.2, sem falhas, erros ou testes ignorados. Também passaram
@@ -78,4 +81,5 @@ propaga cancelamento, fechando o stream.
 
 Os testes não comprovam entrega SMTP, configuração cloud, todas as versões de
 frameworks, outros interpretadores ou desempenho em produção. Uma implantação
-posterior requer sua própria validação de produção. Nenhum pacote foi publicado.
+posterior requer sua própria validação de produção. A execução desses ensaios não
+publicou pacotes; a publicação posterior de `0.1.0a1` no PyPI ocorreu em 15/11/2026.

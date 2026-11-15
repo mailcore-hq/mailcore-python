@@ -1,13 +1,13 @@
 # Segurança
 
-Esta distribuição está em alpha (`0.1.0a1`) e ainda não foi publicada no PyPI.
+Esta distribuição está em alpha.
 O pacote de distribuição é `mailcore-sdk`; o módulo importado é `mailcore`.
 As linhas CPython adotadas na matriz são 3.11–3.15, com versões corrigidas das
 dependências do projeto.
 
 ## Relatar um problema
 
-Antes da publicação, comunique vulnerabilidades por um canal privado acordado com
+Comunique vulnerabilidades por um canal privado acordado com
 os mantenedores. Informe versão, comportamento observado, impacto e uma reprodução
 mínima com dados sintéticos. Não inclua chaves, segredos de webhook, MIME de
 clientes, destinatários reais ou URLs temporárias de download em relatos públicos.

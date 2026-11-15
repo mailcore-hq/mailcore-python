@@ -1,10 +1,10 @@
 # Cobertura do SDK Python
 
-A versão `0.1.0a1`, distribuída como `mailcore-sdk` e importada como `mailcore`,
+A versão `0.1.0a2`, distribuída como `mailcore-sdk` e importada como `mailcore`,
 oferece **16 recursos principais, 30 classes e 151 operações por variante**.
 `Cliente` e `ClienteAsync` totalizam 60 classes de recursos e 302 métodos. As duas
 variantes acessam o mesmo contrato HTTP; esses números não representam 302 rotas
-distintas. Esta versão alpha ainda não foi publicada no PyPI.
+distintas. A versão alpha não oferece garantia de estabilidade da API pública.
 
 A superfície preserva o contrato dos SDKs Mailcore Ruby e Node. O
 [ensaio de API local](integracao-api.json) identifica a revisão do backend e o

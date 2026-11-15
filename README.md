@@ -2,21 +2,19 @@
 
 [Código-fonte](https://github.com/mailcore-hq/mailcore-python) · [Problemas e sugestões](https://github.com/mailcore-hq/mailcore-python/issues)
 
-Cliente Python da API Mailcore, em versão `0.1.0a1`. O pacote de distribuição é
-`mailcore-sdk` e o módulo importado é `mailcore`. Esta versão ainda não foi
-publicada no PyPI. Requer Python 3.11 ou superior.
+Cliente Python da API Mailcore, em versão alpha `0.1.0a2`. O pacote de
+distribuição é `mailcore-sdk` e o módulo importado é `mailcore`.
+Requer Python 3.11 ou superior.
 
-## Instalação local e primeiro envio
+## Instalação
 
-Depois da verificação Docker, instale o arquivo local em sua aplicação Python:
+Na aplicação consumidora:
 
 ```sh
-python -m pip install /caminho/mailcore_sdk-0.1.0a1-py3-none-any.whl
+python -m pip install 'mailcore-sdk==0.1.0a2'
 ```
 
-O pip pode buscar as dependências no PyPI; o arquivo do próprio SDK é local.
-Também é possível instalar o `.tar.gz` de `dist/`, ou o checkout em modo editável
-durante o desenvolvimento da sua aplicação.
+## Primeiro envio
 
 ```python
 import os
@@ -108,11 +106,23 @@ eventos pertencem ao consumidor.
 
 Consulte [cobertura](docs/cobertura.md), [integrações Flask/FastAPI/Django](docs/integracoes.md)
 e [verificação](docs/verificacao.md). Não há dependência de framework no runtime
-do pacote. Instalação local usa os arquivos `.whl`/`.tar.gz` preparados em `dist/`.
+do pacote.
+
+Para desenvolver com o checkout local, use `python -m pip install -e .`.
+Uma instalação a partir dos artefatos gerados usa a wheel local:
+
+```sh
+python -m pip install /caminho/mailcore_sdk-0.1.0a2-py3-none-any.whl
+```
+
+O pip resolve as dependências declaradas; o arquivo do SDK é local nessa
+modalidade. O `.tar.gz` de `dist/` também pode ser instalado pelas ferramentas
+Python habituais. Para verificar o projeto:
 
 ```sh
 sh scripts/verificar.sh
 ```
 
 O desenvolvimento e os testes usam Docker, sem instalar Python, pip ou frameworks
-no host. Nenhum comando publica no PyPI ou faz deploy.
+no host. O script de verificação não publica pacotes nem faz deploy.
+A publicação usa o workflow manual `Publicar no PyPI`, separado dessas verificações.
