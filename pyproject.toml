@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mailcore-sdk"
-version = "0.1.0a2"
+version = "0.2.0a1"
 description = "Cliente Python da API Mailcore com recursos síncronos e assíncronos."
 readme = "README.md"
 license = "MIT"

@@ -1,5 +1,15 @@
 # Histórico de alterações
 
+## 0.2.0a1 — 15/11/2026
+
+- Helper síncrono/assíncrono `recebimento.encaminhar`, com conteúdo e anexos CID
+  preservados ou original EML e corpo explícito do chamador.
+- Tipos discriminados, validação completa de metadados e limites, downloads
+  autenticados por ID, sem seguir URLs e sem submissão parcial.
+- Idempotência somente no envio final, cancelamento propagado e ausência de retry.
+- Mantidas 151 operações HTTP por variante e as APIs anteriores, incluindo lotes
+  e modelos com composição; artefatos e evidências anteriores preservados.
+
 ## 0.1.0a2 — 15/11/2026
 
 - Instalação principal pelo PyPI, com versão explícita, e instruções locais

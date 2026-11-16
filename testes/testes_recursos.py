@@ -1692,6 +1692,9 @@ class TestesRecursos(unittest.TestCase):
                     for nome_metodo, valor in vars(classe).items()
                     if not nome_metodo.startswith("_") and inspect.isfunction(valor)
                 }
+                if nome == "Recebimento":
+                    self.assertIn("encaminhar", encontrados)
+                    encontrados.remove("encaminhar")
                 self.assertEqual(esperados, encontrados, classe.__name__)
 
     def test_recursos_raiz_exportam_clientes_sync_e_async(self):

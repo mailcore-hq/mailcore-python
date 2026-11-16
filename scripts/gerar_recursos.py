@@ -1887,6 +1887,20 @@ def emitir_classe(classe: dict, assincrono: bool) -> str:
         if indice:
             linhas.append("")
         linhas.extend(emitir_metodo(classe["nome"], metodo, assincrono))
+    if classe["nome"] == "Recebimento":
+        prefixo = "async " if assincrono else ""
+        aguardar = "await " if assincrono else ""
+        helper = "encaminhar_async" if assincrono else "encaminhar"
+        linhas += [
+            "",
+            f"    {prefixo}def encaminhar(",
+            "        self,",
+            "        pedido: PedidoEncaminhamentoRecebido,",
+            "        **opcoes: Unpack[OpcoesRequisicao],",
+            "    ) -> Resposta[RespostaEnvio]:",
+            '        """Compõe um novo envio com o recebido completo, sem seguir URLs."""',
+            f"        return {aguardar}{helper}(self._transporte, pedido, opcoes)",
+        ]
     return "\n".join(linhas)
 
 
@@ -1909,6 +1923,7 @@ def emitir_modulo(nome: str, classes: list[dict]) -> str:
             "OpcoesRequisicao",
             "PedidoEmail",
             "PedidoEmailLote",
+            "PedidoEncaminhamentoRecebido",
             "Resposta",
             "RespostaEnvio",
             "RespostaLote",
@@ -1929,6 +1944,8 @@ def emitir_modulo(nome: str, classes: list[dict]) -> str:
         linhas.append("from ..erros import ErroConfiguracao")
     linhas += ["from ..tipos import ("] + [f"    {tipo}," for tipo in tipos] + [")"]
     linhas += ["from .base import RecursoBase, RecursoBaseAsync, segmento"]
+    if nome == "recebimento":
+        linhas.append("from .encaminhamento import encaminhar, encaminhar_async")
     if any(c["filhos"] for c in classes):
         linhas += [
             "",

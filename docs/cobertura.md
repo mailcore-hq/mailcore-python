@@ -1,8 +1,9 @@
 # Cobertura do SDK Python
 
-A versão `0.1.0a2`, distribuída como `mailcore-sdk` e importada como `mailcore`,
+A versão `0.2.0a1`, distribuída como `mailcore-sdk` e importada como `mailcore`,
 oferece **16 recursos principais, 30 classes e 151 operações por variante**.
-`Cliente` e `ClienteAsync` totalizam 60 classes de recursos e 302 métodos. As duas
+`Cliente` e `ClienteAsync` totalizam 60 classes de recursos e 302 métodos HTTP,
+mais o helper `recebimento.encaminhar` em cada variante. As duas
 variantes acessam o mesmo contrato HTTP; esses números não representam 302 rotas
 distintas. A versão alpha não oferece garantia de estabilidade da API pública.
 
@@ -97,6 +98,40 @@ Original MIME, anexos recebidos e exportações usam rotas fixas autenticadas. U
 temporárias presentes nos metadados são capacidades sensíveis; o SDK não as segue
 automaticamente nem transfere a credencial para um destino informado pela API.
 Retenção e disponibilidade do conteúdo são determinadas pelo servidor.
+
+`recebimento.encaminhar(pedido, **opcoes)` compõe uma nova mensagem por GETs
+autenticados e um único `POST /emails`; não acrescenta rota HTTP nem depende da
+paginação de anexos. `PedidoEncaminhamentoRecebido` discrimina o modo preservado
+(omitido ou `preservar_conteudo=True`, sem corpo do chamador) e EML
+(`preservar_conteudo=False`, com `texto` e/ou `html` não vazio). Os tipos
+`EncaminhamentoPreservado`, `EncaminhamentoTexto` e `EncaminhamentoHtml` também
+são públicos. O retorno é `Resposta[RespostaEnvio]`.
+
+O modo preservado consulta `formato_html=cid`, exige processamento `concluida` e
+`conteudo_disponivel=True`, conserva assunto/corpos e baixa todo o inventário do
+detalhe por IDs. Não copia envelope, Cc/Cco, Reply-To, Message-ID nem cabeçalhos
+do original. Assunto ausente usa `Sem assunto`. EML conserva os bytes Raw em
+Base64 canônico no arquivo `mensagem-encaminhada.eml`, tipo `message/rfc822`,
+sem CID; usa o corpo do chamador e prefixa `Fwd:` se ausente, sem diferenciar
+maiúsculas e minúsculas. A estrutura MIME é validada pelo backend.
+
+O helper aceita PDF, TXT, CSV, PNG, JPEG, GIF, WebP e EML com tipo/extensão
+correspondentes. Nome sem extensão só é admitido com CID válido para os sete
+primeiros tipos. Extensão incompatível, CID repetido, controles e EML inline
+são recusados. Não renomeia nem descarta arquivos. Antes dos downloads valida
+todos os metadados, quantidade, tamanhos declarados e orçamento JSON conhecido;
+durante a leitura aplica teto e exige igualdade com o tamanho declarado.
+Downloads sequenciais limitam concorrência e memória. Nenhum erro gera POST
+parcial. Limites: dez anexos, soma de 5 MiB, corpo UTF-8 agregado de 500 KiB,
+JSON de 8 MiB e até cinquenta destinatários. O Raw inteiro conta como um anexo.
+Assunto e remetente admitem até 998 bytes, inclusive o prefixo de EML. A consulta
+JSON do detalhe usa teto de 16 MiB; downloads usam 5 MiB. Ambos respeitam também
+um teto menor configurado no cliente ou informado em `limite_resposta_bytes`.
+
+Somente opções existentes de transporte são aceitas. Idempotência aparece
+exclusivamente no POST final, sem derivação da chave ou repetição após resultado
+ambíguo. Cancelamento async e `asyncio.timeout()` propagam a interrupção e fecham
+o fluxo; `tempo_limite` conserva a semântica de inatividade HTTPX.
 
 `baixar_original_fluxo`, `baixar_anexo_fluxo` e `baixar_fluxo` devolvem gestores de
 contexto. Use `with` no cliente síncrono e `async with` no assíncrono; dentro do

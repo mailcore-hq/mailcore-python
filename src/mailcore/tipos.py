@@ -9,6 +9,7 @@ from types import MappingProxyType
 from typing import (
     Any,
     Generic,
+    Literal,
     Never,
     NotRequired,
     Protocol,
@@ -108,6 +109,33 @@ class EmailComModelo(_EnvioBasico, total=False):
 
 
 PedidoEmail: TypeAlias = EmailHtml | EmailTexto | EmailComModelo
+
+
+class _EncaminhamentoRecebido(TypedDict):
+    recebido_id: str
+    remetente: str
+    destinatarios: list[str]
+
+
+class EncaminhamentoPreservado(_EncaminhamentoRecebido):
+    preservar_conteudo: NotRequired[Literal[True]]
+
+
+class EncaminhamentoTexto(_EncaminhamentoRecebido):
+    preservar_conteudo: Literal[False]
+    texto: str
+    html: NotRequired[str | None]
+
+
+class EncaminhamentoHtml(_EncaminhamentoRecebido):
+    preservar_conteudo: Literal[False]
+    html: str
+    texto: NotRequired[str | None]
+
+
+PedidoEncaminhamentoRecebido: TypeAlias = (
+    EncaminhamentoPreservado | EncaminhamentoTexto | EncaminhamentoHtml
+)
 
 
 class _LoteDireto(_EnvioBasico):

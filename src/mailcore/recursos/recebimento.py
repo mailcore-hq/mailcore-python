@@ -10,9 +10,12 @@ from ..tipos import (
     GestorFluxo,
     GestorFluxoAsync,
     OpcoesRequisicao,
+    PedidoEncaminhamentoRecebido,
     Resposta,
+    RespostaEnvio,
 )
 from .base import RecursoBase, RecursoBaseAsync, segmento
+from .encaminhamento import encaminhar, encaminhar_async
 
 
 class Recebimento(RecursoBase):
@@ -112,6 +115,14 @@ class Recebimento(RecursoBase):
             **opcoes,
         )
 
+    def encaminhar(
+        self,
+        pedido: PedidoEncaminhamentoRecebido,
+        **opcoes: Unpack[OpcoesRequisicao],
+    ) -> Resposta[RespostaEnvio]:
+        """Compõe um novo envio com o recebido completo, sem seguir URLs."""
+        return encaminhar(self._transporte, pedido, opcoes)
+
 
 class RecebimentoAsync(RecursoBaseAsync):
     async def listar(
@@ -209,3 +220,11 @@ class RecebimentoAsync(RecursoBaseAsync):
             f"/receiving/{segmento(id)}/attachments/{segmento(anexo_id)}/download",
             **opcoes,
         )
+
+    async def encaminhar(
+        self,
+        pedido: PedidoEncaminhamentoRecebido,
+        **opcoes: Unpack[OpcoesRequisicao],
+    ) -> Resposta[RespostaEnvio]:
+        """Compõe um novo envio com o recebido completo, sem seguir URLs."""
+        return await encaminhar_async(self._transporte, pedido, opcoes)

@@ -11,9 +11,9 @@ on:
         description: Versão exata a publicar
         type: choice
         required: true
-        default: 0.1.0a2
+        default: 0.2.0a1
         options:
-          - 0.1.0a2
+          - 0.2.0a1
 
 permissions:
   contents: read
@@ -28,7 +28,7 @@ jobs:
     if: >-
       ${{ github.event_name == 'workflow_dispatch' &&
           github.repository == 'mailcore-hq/mailcore-python' &&
-          github.ref == 'refs/heads/main' && inputs.versao == '0.1.0a2' }}
+          github.ref == 'refs/heads/main' && inputs.versao == '0.2.0a1' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
@@ -54,7 +54,7 @@ jobs:
 
           projeto = tomllib.loads(Path('pyproject.toml').read_text())['project']
           assert projeto['name'] == 'mailcore-sdk'
-          assert projeto['version'] == os.environ['VERSAO_PUBLICACAO'] == '0.1.0a2'
+          assert projeto['version'] == os.environ['VERSAO_PUBLICACAO'] == '0.2.0a1'
           PY
 
       - name: Instalar as ferramentas de distribuição
@@ -68,10 +68,10 @@ jobs:
         run: |
           python -m build --no-isolation
           python -m twine check --strict \
-            dist/mailcore_sdk-0.1.0a2-py3-none-any.whl \
-            dist/mailcore_sdk-0.1.0a2.tar.gz
-          sha256sum dist/mailcore_sdk-0.1.0a2-py3-none-any.whl \
-            dist/mailcore_sdk-0.1.0a2.tar.gz
+            dist/mailcore_sdk-0.2.0a1-py3-none-any.whl \
+            dist/mailcore_sdk-0.2.0a1.tar.gz
+          sha256sum dist/mailcore_sdk-0.2.0a1-py3-none-any.whl \
+            dist/mailcore_sdk-0.2.0a1.tar.gz
 
       - name: Instalar a wheel em um consumidor isolado
         shell: bash
@@ -81,7 +81,7 @@ jobs:
           python -m venv "$diretorio_consumidor/venv"
           "$diretorio_consumidor/venv/bin/python" -m pip install \
             --disable-pip-version-check --only-binary=:all: \
-            "$GITHUB_WORKSPACE/dist/mailcore_sdk-0.1.0a2-py3-none-any.whl"
+            "$GITHUB_WORKSPACE/dist/mailcore_sdk-0.2.0a1-py3-none-any.whl"
           cd "$diretorio_consumidor"
           "$diretorio_consumidor/venv/bin/python" - <<'PY'
           import importlib.metadata
@@ -90,12 +90,12 @@ jobs:
 
           import mailcore
 
-          assert importlib.metadata.version('mailcore-sdk') == mailcore.VERSAO == '0.1.0a2'
+          assert importlib.metadata.version('mailcore-sdk') == mailcore.VERSAO == '0.2.0a1'
           assert Path(mailcore.__file__).resolve().is_relative_to(Path(sys.prefix).resolve())
           assert Path(mailcore.__file__).with_name('py.typed').is_file()
           with mailcore.Cliente('mc_verificacao_sintetica') as cliente:
               assert cliente.emails and cliente.contatos.exportacoes and cliente.caixas.conversas.emails
-          print('Instalação isolada aprovada: mailcore-sdk 0.1.0a2.')
+          print('Instalação isolada aprovada: mailcore-sdk 0.2.0a1.')
           PY
 
       - name: Guardar somente os dois pacotes verificados
@@ -103,8 +103,8 @@ jobs:
         with:
           name: mailcore-sdk-${{ inputs.versao }}
           path: |
-            dist/mailcore_sdk-0.1.0a2-py3-none-any.whl
-            dist/mailcore_sdk-0.1.0a2.tar.gz
+            dist/mailcore_sdk-0.2.0a1-py3-none-any.whl
+            dist/mailcore_sdk-0.2.0a1.tar.gz
           if-no-files-found: error
           retention-days: 7
 
@@ -114,7 +114,7 @@ jobs:
     if: >-
       ${{ github.event_name == 'workflow_dispatch' &&
           github.repository == 'mailcore-hq/mailcore-python' &&
-          github.ref == 'refs/heads/main' && inputs.versao == '0.1.0a2' }}
+          github.ref == 'refs/heads/main' && inputs.versao == '0.2.0a1' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

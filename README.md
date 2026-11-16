@@ -2,7 +2,7 @@
 
 [Código-fonte](https://github.com/mailcore-hq/mailcore-python) · [Problemas e sugestões](https://github.com/mailcore-hq/mailcore-python/issues)
 
-Cliente Python da API Mailcore, em versão alpha `0.1.0a2`. O pacote de
+Cliente Python da API Mailcore, em versão alpha `0.2.0a1`. O pacote de
 distribuição é `mailcore-sdk` e o módulo importado é `mailcore`.
 Requer Python 3.11 ou superior.
 
@@ -11,7 +11,7 @@ Requer Python 3.11 ou superior.
 Na aplicação consumidora:
 
 ```sh
-python -m pip install 'mailcore-sdk==0.1.0a2'
+python -m pip install 'mailcore-sdk==0.2.0a1'
 ```
 
 ## Primeiro envio
@@ -97,6 +97,34 @@ ou cancelar. Só trate arquivos parciais como completos depois de sucesso.
 Downloads usam rotas autenticadas; URLs temporárias de metadados não são acessadas
 automaticamente.
 
+Para encaminhar um recebido completo com novos remetente e destinatários:
+
+```python
+from mailcore import Cliente, PedidoEncaminhamentoRecebido
+
+pedido: PedidoEncaminhamentoRecebido = {
+    "recebido_id": "id-do-recebido",
+    "remetente": "Equipe <avisos@seudominio.com.br>",
+    "destinatarios": ["pessoa@exemplo.com.br"],
+}
+with Cliente() as cliente:
+    resposta = cliente.recebimento.encaminhar(pedido, chave_idempotencia="encaminhamento-123")
+```
+
+O modo padrão conserva assunto, texto, HTML CID e todos os anexos do detalhe.
+Para anexar o original como EML, acrescente `preservar_conteudo=False` e informe
+`texto` e/ou `html` no pedido. Nesse modo o assunto recebe `Fwd:` uma única vez.
+O cliente async usa `await cliente.recebimento.encaminhar(pedido, **opcoes)`.
+O retorno é `Resposta[RespostaEnvio]`, com o ID da nova mensagem.
+
+O helper requer conteúdo disponível e processamento concluído; valida todos os
+metadados antes de baixar e confere os bytes reais. Aceita até dez anexos somando
+5 MiB, corpo de até 500 KiB, JSON de até 8 MiB e cinquenta destinatários. Um tipo
+proibido ou arquivo ausente encerra a operação inteira. Downloads são sequenciais,
+em memória e somente por rotas autenticadas. A chave de idempotência vai apenas
+no POST final, sem repetição automática. Permissões de leitura e envio devem
+pertencer à mesma credencial. Consulte [a cobertura](docs/cobertura.md).
+
 `verificar_assinatura(corpo_bruto, cabecalhos, segredo)` verifica HMAC-SHA256
 `svix-*`, com comparação em tempo constante e janela de cinco minutos. Passe o
 corpo bruto antes de interpretar JSON. Deduplicação e confirmação durável dos
@@ -112,7 +140,7 @@ Para desenvolver com o checkout local, use `python -m pip install -e .`.
 Uma instalação a partir dos artefatos gerados usa a wheel local:
 
 ```sh
-python -m pip install /caminho/mailcore_sdk-0.1.0a2-py3-none-any.whl
+python -m pip install /caminho/mailcore_sdk-0.2.0a1-py3-none-any.whl
 ```
 
 O pip resolve as dependências declaradas; o arquivo do SDK é local nessa

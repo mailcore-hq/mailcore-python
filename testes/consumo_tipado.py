@@ -7,8 +7,12 @@ from mailcore import (
     Cliente,
     ClienteAsync,
     EmailComModelo,
+    EncaminhamentoHtml,
+    EncaminhamentoPreservado,
+    EncaminhamentoTexto,
     PedidoEmail,
     PedidoEmailLote,
+    PedidoEncaminhamentoRecebido,
     Resposta,
     RespostaEnvio,
     RespostaLote,
@@ -40,9 +44,23 @@ LOTE_MODELO: PedidoEmailLote = {
     "cabecalhos": {"X-Referencia": "modelo"},
     "anexos": [],
 }
+ENCAMINHAMENTO: PedidoEncaminhamentoRecebido = {
+    "recebido_id": "recebido",
+    "remetente": "equipe@example.test",
+    "destinatarios": ["pessoa@example.test"],
+}
+ENCAMINHAMENTO_EML: PedidoEncaminhamentoRecebido = {
+    "recebido_id": "recebido",
+    "remetente": "equipe@example.test",
+    "destinatarios": ["pessoa@example.test"],
+    "preservar_conteudo": False,
+    "texto": "Meu corpo",
+}
 
 
 def consumir(cliente: Cliente) -> None:
+    assert_type(cliente.recebimento.encaminhar(ENCAMINHAMENTO), Resposta[RespostaEnvio])
+    assert_type(cliente.recebimento.encaminhar(ENCAMINHAMENTO_EML), Resposta[RespostaEnvio])
     assert_type(cliente.emails.enviar(PEDIDO), Resposta[RespostaEnvio])
     assert_type(cliente.lotes.enviar([LOTE, LOTE_MODELO]), Resposta[RespostaLote])
     assert_type(cliente.recebimento.baixar_original("id"), Resposta[bytes])
@@ -52,6 +70,8 @@ def consumir(cliente: Cliente) -> None:
 
 
 async def consumir_async(cliente: ClienteAsync) -> None:
+    assert_type(await cliente.recebimento.encaminhar(ENCAMINHAMENTO), Resposta[RespostaEnvio])
+    assert_type(await cliente.recebimento.encaminhar(ENCAMINHAMENTO_EML), Resposta[RespostaEnvio])
     assert_type(await cliente.emails.enviar(PEDIDO), Resposta[RespostaEnvio])
     assert_type(await cliente.lotes.enviar([LOTE, LOTE_MODELO]), Resposta[RespostaLote])
     assert_type(await cliente.recebimento.baixar_original("id"), Resposta[bytes])
@@ -95,4 +115,43 @@ MODELO_CID_INVALIDO: EmailComModelo = {
             "id_conteudo": "logo",  # type: ignore[typeddict-unknown-key]
         }
     ],
+}
+
+ENCAMINHAMENTO_CORPO_INVALIDO: EncaminhamentoPreservado = {
+    "recebido_id": "recebido",
+    "remetente": "origem@example.test",
+    "destinatarios": [],
+    "texto": "incompatível",  # type: ignore[typeddict-unknown-key]
+}
+ENCAMINHAMENTO_EML_SEM_CORPO: EncaminhamentoTexto = {  # type: ignore[typeddict-item]
+    "recebido_id": "recebido",
+    "remetente": "origem@example.test",
+    "destinatarios": [],
+    "preservar_conteudo": False,
+}
+ENCAMINHAMENTO_EML_FLAG_INVALIDA: EncaminhamentoHtml = {
+    "recebido_id": "recebido",
+    "remetente": "origem@example.test",
+    "destinatarios": [],
+    "preservar_conteudo": True,  # type: ignore[typeddict-item]
+    "html": "<p>Corpo",
+}
+ENCAMINHAMENTO_CC_INVALIDO: EncaminhamentoPreservado = {
+    "recebido_id": "recebido",
+    "remetente": "origem@example.test",
+    "destinatarios": [],
+    "cc": [],  # type: ignore[typeddict-unknown-key]
+}
+ENCAMINHAMENTO_UNIAO_INVALIDO: PedidoEncaminhamentoRecebido = {
+    "recebido_id": "recebido",
+    "remetente": "origem@example.test",
+    "destinatarios": [],
+    "preservar_conteudo": True,  # type: ignore[typeddict-item]
+    "texto": "incompatível",
+}
+ENCAMINHAMENTO_UNIAO_EML_SEM_CORPO: PedidoEncaminhamentoRecebido = {
+    "recebido_id": "recebido",
+    "remetente": "origem@example.test",
+    "destinatarios": [],
+    "preservar_conteudo": False,  # type: ignore[typeddict-item]
 }
